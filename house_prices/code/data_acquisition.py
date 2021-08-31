@@ -7,16 +7,16 @@ import sys
 
 def load_data(path, y_col, index_col = None):
     data = pd.read_csv(path, index_col = index_col)
-    cols =set(train_data.columns)
+    cols =set(data.columns)
     cols.remove(y_col)
     x_cols = list(cols)
-    X = train_data[x_cols]
-    y = train_data[[y_col]]
+    X = data[x_cols]
+    y = data[[y_col]]
     return X, y
 
 def cleaning(X, processus, variables):
     for i in range(len(processus)):
-        X = processus[i](X, variables[i])
+        X = processus[i](X.copy(), variables[i])
     return X
 
 def drop_na(X, percent):
@@ -41,6 +41,6 @@ def fill_na(X, rules):
 
 def main():
     X, y = load_data(path = '../data/train.csv', y_col ='SalePrice', index_col = 'Id')
-    X = cleaning(X = X , processus= [drop_na, fill_na], variables = [{'percent' : 95}, {'numeric': 'mean', 'string': 'Null'}])
+    X2 = cleaning(X = X.copy() , processus= [drop_na, fill_na], variables = [{'percent' : 95}, {'numeric': 'mean', 'string': 'Null'}])
 if __name__ == "__main__":
     main()
