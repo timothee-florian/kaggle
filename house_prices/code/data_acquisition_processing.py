@@ -48,6 +48,9 @@ def make_categorical(X, cols):
 
 def main():
     X, y = load_data(path = '../data/train.csv', y_col ='SalePrice', index_col = 'Id')
-    X2 = cleaning(X = X.copy() , processus= [drop_na, fill_na], variables = [{'percent' : 95}, {'numeric': 'mean', 'string': 'Null'}])
+    X = cleaning(X = X.copy() , processus= [drop_na, fill_na], variables = [{'percent' : 95}, {'numeric': 'mean', 'string': 'Null'}])
+    cat_cols = get_categorical_cols(X)
+    X = make_categorical(X, cols = cat_cols)
+    print(X.head())
 if __name__ == "__main__":
     main()
