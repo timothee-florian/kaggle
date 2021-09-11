@@ -32,8 +32,11 @@ def fill_na(X, rules):
             elif rules['numeric'] == 'median':
                 v =X[col].median()
                 X[col].fillna(v, inplace = True)
+            elif rules['numeric'] == 'flag':
+                v =X[col].min()
+                X[col].fillna(v - 1, inplace = True)
             else:
-                X[col].fillna(rules['numeric'], inplace = True)
+                X[col].fillna(rules['numeric'], inplace = True) # a value is given
         else:
             X[col].fillna(rules['string'], inplace = True)
     return X
