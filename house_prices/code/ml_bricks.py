@@ -1,11 +1,14 @@
 from sklearn.model_selection import train_test_split
+from sklearn.model_selection import cross_val_score
+from sklearn.model_selection import KFold
 from sklearn.ensemble import RandomForestRegressor
 
 def split(X, y, random_state):
     y2 = y.to_numpy().reshape([-1]) #prefered by the sklearn algorithms
-    X_train, X_test, y_train, y_test = train_test_split(
-        X, y2, test_size=0.2, random_state = random_state)
-    return X_train, X_test, y_train, y_test
+    X2 = X.to_numpy()
+    X_train_val, X_test, y_train_val, y_test = train_test_split(
+        X2, y2, test_size=0.2, random_state = random_state)
+    return X_train_val, X_test, y_train_val, y_test
 
 def regression(model, X_train, y_train, params):
     '''
@@ -16,3 +19,4 @@ def regression(model, X_train, y_train, params):
     model_reg.set_params(**params)
     model_reg.fit(X_train, y_train)
     return model_reg
+
