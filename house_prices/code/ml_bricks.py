@@ -20,3 +20,9 @@ def regression(model, X_train, y_train, params):
     model_reg.fit(X_train, y_train)
     return model_reg
 
+def model_evaluation(model, X, y, params, metric, n_splits = 3):
+    model = model()
+    model.set_params(**params)
+    k_fold = KFold(n_splits)
+    return [model.fit(X[train], y[train]).score(X[val], y[val])
+         for train, val in k_fold.split(X)]
