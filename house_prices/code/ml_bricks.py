@@ -4,8 +4,8 @@ from sklearn.model_selection import KFold
 from sklearn.ensemble import RandomForestRegressor
 
 def split(X, y, random_state):
-    y2 = y.to_numpy().reshape([-1]) #prefered by the sklearn algorithms
-    X2 = X.to_numpy()
+    y2 = y.to_numpy().reshape([-1]) # prefered by the sklearn algorithms
+    X2 = X.to_numpy() # needed for the k_fold of the model selection
     X_train_val, X_test, y_train_val, y_test = train_test_split(
         X2, y2, test_size=0.2, random_state = random_state)
     return X_train_val, X_test, y_train_val, y_test
@@ -21,6 +21,10 @@ def regression(model, X_train, y_train, params):
     return model_reg
 
 def model_evaluation(model, X, y, params, metric, n_splits = 3):
+    '''
+    Example: 
+    [metric_scores] = model_evaluation(model= RandomForestRegressor, X=X_train_val, y=y_train_val, params={'max_depth': 15}, metric = r2_score, n_splits = 5)
+    '''
     model = model()
     model.set_params(**params)
     k_fold = KFold(n_splits)
