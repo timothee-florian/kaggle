@@ -56,8 +56,17 @@ def evaluate(X, y, model_eval):
 
     Add the results of the evaluation to model_eval
     '''
-    results = model_evaluation(model = model_eval['model'], X = X, y = y, 
-                               params = model_eval['parameters'], metric = model_eval['metric'], 
+    if type(model_eval['model']) == str:
+        model = eval(model_eval['model'])
+    else:
+        model = model_eval['model']
+    if type(model_eval['metric']) == str:
+        metric = eval(model_eval['metric'])
+    else:
+        metric = model_eval['metric']
+    
+    results = model_evaluation(model = model, X = X, y = y, 
+                               params = model_eval['parameters'], metric = metric, 
                                n_splits = model_eval['n_splits'])
     model_eval['results'] = {}
     model_eval['results']['values'] = results

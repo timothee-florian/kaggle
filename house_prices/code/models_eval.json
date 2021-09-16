@@ -1,0 +1,13 @@
+{
+    "models_eval" : [
+        {
+            "model": "RandomForestRegressor",
+            "parameters": {
+                "max_depth": 15, 
+                "random_state": 424
+            },
+            "metric": "r2_score",
+            "n_splits": 5
+        }
+    ]
+}
