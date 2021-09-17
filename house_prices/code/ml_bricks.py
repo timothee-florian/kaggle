@@ -2,6 +2,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.model_selection import cross_val_score
 from sklearn.model_selection import KFold
 from sklearn.ensemble import RandomForestRegressor
+from sklearn.metrics import r2_score, mean_squared_error
 
 import numpy as np
 
@@ -73,3 +74,26 @@ def evaluate(X, y, model_eval):
     model_eval['results']['mean'] = np.mean(results)
     model_eval['results']['median'] = np.median(results)
     model_eval['results']['std'] = np.std(results)
+
+def chose_model(models_eval):
+    metric_eval = {
+        'r2_score': 'larger',
+        'mean_squared_error' : 'smaller'
+    }
+    evaluation = {
+        'larger': '>',
+        'smaller': '<'
+    }
+    t = metric_eval[models_eval[0]['metric']]
+    optimal_model = models_eval[0]
+    for model_eval in models_eval:
+        if eval('{} {} {}'.format(model_eval['results']['mean'], evaluation[t],
+                                optimal_model['results']['mean'])):
+            optimal_model = model_eval
+    return optimal_model
+
+
+
+
+
+
