@@ -5,9 +5,12 @@ from pandas.api.types import is_numeric_dtype, is_string_dtype
 import numpy as np
 import sys
 
-def load_data(path, y_col, index_col = None):
+def load_data(path, y_col = None, index_col = None):
     data = pd.read_csv(path, index_col = index_col)
     cols =set(data.columns)
+    if y_col is None:
+        X = data[cols]
+        return X
     cols.remove(y_col)
     x_cols = list(cols)
     X = data[x_cols]
