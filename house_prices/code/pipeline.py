@@ -3,7 +3,7 @@ import pickle
 from data_acquisition_processing import *
 from ml_bricks import *
 
-def get_data():
+def get_train_data():
     X, y = load_data(path = '../data/train.csv', y_col ='SalePrice', index_col = 'Id')
     X = cleaning(X = X.copy() , processus= [drop_na, fill_na], variables = [{'percent' : 95}, {'numeric': 'mean', 'string': 'Null'}])
     cat_cols = get_categorical_cols(X)
@@ -11,10 +11,17 @@ def get_data():
     return X, y
 
 
+def get_test_data():
+    X = load_data(path = '../data/test.csv', y_col = None, index_col = 'Id')
+    X = cleaning(X = X.copy() , processus= [drop_na, fill_na], variables = [{'percent' : 95}, {'numeric': 'mean', 'string': 'Null'}])
+    cat_cols = get_categorical_cols(X)
+    X = make_categorical(X, cols = cat_cols)
+    return X
+
     
 
 if __name__ == '__main__':
-    X, y = get_data()
+    X, y = get_train_data()
     X_train, y_train, X_test, y_test = split_2(X, y, train_size = 0.9, random_state = 42)
     with open('models_eval.json', 'r') as f:
         models_eval = json.load(f)['models_eval']
@@ -32,6 +39,10 @@ if __name__ == '__main__':
     model_reg = regression(model, X_train, y_train, params= best_model['parameters'])
     filename = '{}_{}_{0:.3f}.sav'.format(best_model['model'], best_model['metric'], best_model['results']['mean'])
 
-    pickle.dump(model, open(filename, 'wb'))
+    pickle.dump(model_reg, open(filename, 'wb'))
+
+    X_test = get_test_data()
+    y_pred = model_reg.predict(X_test)
+
 
     
