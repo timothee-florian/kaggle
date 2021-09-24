@@ -24,14 +24,15 @@ def get_data():
 if __name__ == '__main__':
     X_train, X_test, y_train = get_data()
     X_train, y_train, X_val, y_val = split_2(X_train, y_train, train_size = 1)
-    with open('models_eval.json', 'r') as f:
+    with open('models.json', 'r') as f:
         models_eval = json.load(f)['models_eval']
     for model_eval in models_eval:
         evaluate(X_train, y_train, model_eval = model_eval)
-    # with open('models_eval2.json', 'w') as f:
-    #     json.dump(models_eval, f)
+    with open('models_evaluation.json', 'w') as f:
+        json.dump(models_eval, f)
     best_model = chose_model(models_eval)
-
+    print('Mean {0} score: {1}'.format(best_model['results']['metric'], best_model['results']['mean']))
+    
     if type(best_model['model']) == str:
         model = eval(best_model['model'])
     else:
