@@ -9,7 +9,8 @@ import numpy as np
 def split_2(X, y, train_size = 0.8, random_state = None):
     y2 = y.to_numpy().reshape([-1]) # prefered by the sklearn algorithms
     X2 = X.to_numpy() # needed for the k_fold of the model selection
-
+    if train_size == 1:
+        return X2, y2, None, None
     X_train, X_test, y_train, y_test = train_test_split(
             X2, y2, train_size= train_size, random_state = random_state)
     
