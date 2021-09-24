@@ -1,25 +1,35 @@
-
+#!/usr/bin/env python3
 import json
 import pickle
 from data_acquisition_processing import *
 from ml_bricks import *
 
 
-def get_data():
-    X_train, y_train = load_data(path = '../data/train.csv', y_col ='SalePrice', index_col = 'Id')
-    X_test = load_data(path = '../data/test.csv', y_col = None, index_col = 'Id')
-    train_ids = X_train.index
-    test_ids = X_test.index
-    X = pd.concat([X_train, X_test])
 
-    X = cleaning(X = X.copy() , processus= [drop_na, fill_na], variables = [{'percent' : 95}, {'numeric': 'mean', 'string': 'Null'}])
-    cat_cols = get_categorical_cols(X)
-    X = make_categorical(X, cols = cat_cols)
-    X_train = X.loc[train_ids]
-    X_test = X.loc[test_ids]
-    return X_train, X_test, y_train
+def model_grid_search():
+    models_eval = []
 
-    
+    model = {'metric': 'mean_squared_error', 'n_splits': 5}
+    models = ["RandomForestRegressor"]
+    max_depth = [2, 6, 18, 54]
+    n_estimators = [10, 100, 1000]
+    max_features = ['auto', 'log2', 'sqrt']
+    n_jobs = -1
+    for i in range(len(models)):
+        m = model.copy()
+        m['model'] = models[i]
+        m['parameters'] = {}
+        for j in range(len(max_depth)):
+            for k in range(len(n_estimators)):
+                for l in range(len(max_features)):
+                    m['parameters']['n_jobs'] = n_jobs
+                    m['parameters']['max_depth'] = max_depth[j]
+                    m['parameters']['n_estimators'] = n_estimators[k]
+                    m['parameters']['max_features'] = max_features[l]
+                    models_eval.append(m)
+    return models_eval
+
+
 
 if __name__ == '__main__':
     X_train, X_test, y_train = get_data()
@@ -45,6 +55,3 @@ if __name__ == '__main__':
 
     y_pred = model_reg.predict(X_test)
     pd.DataFrame({'id':X_test.index, 'SalePrice':y_pred}).set_index('id').to_csv('submission.csv')
-
-
-    

@@ -52,11 +52,17 @@ def make_categorical(X, cols):
     X = pd.concat([X, pd.get_dummies(X[cols])], axis =1).drop(cols, axis =1)
     return X
 
-def main():
-    X, y = load_data(path = '../data/train.csv', y_col ='SalePrice', index_col = 'Id')
-    X = cleaning(X = X.copy() , processus= [drop_na, fill_na], variables = [{'percent' : 95}, {'numeric': 'mean', 'string': 'Null'}])
+
+def get_data():
+    X_train, y_train = load_data(path = '../data/train.csv', y_col ='SalePrice', index_col = 'Id')
+    X_test = load_data(path = '../data/test.csv', y_col = None, index_col = 'Id')
+    train_ids = X_train.index
+    test_ids = X_test.index
+    X = pd.concat([X_train, X_test])
+
+    X = cleaning(X = X.copy() , processus= [drop_na, fill_na], variables = [{'percent' : 100}, {'numeric': 'mean', 'string': 'Null'}])
     cat_cols = get_categorical_cols(X)
     X = make_categorical(X, cols = cat_cols)
-    print(X.head())
-if __name__ == "__main__":
-    main()
+    X_train = X.loc[train_ids]
+    X_test = X.loc[test_ids]
+    return X_train, X_test, y_train
