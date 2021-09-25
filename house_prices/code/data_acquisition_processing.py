@@ -17,9 +17,13 @@ def load_data(path, y_col = None, index_col = None):
     y = data[[y_col]]
     return X, y
 
-def cleaning(X, processus, variables):
-    for i in range(len(processus)):
-        X = processus[i](X.copy(), variables[i])
+def cleaning(X, cleanings):
+    for i in range(len(cleanings)):
+        if type(cleanings[i]['processus']) == str:
+            X = eval(cleanings[i]['processus'])(X.copy(), cleanings[i]['variables'])
+        else:
+            X = cleanings[i]['processus'](X.copy(), cleanings[i]['variables'])
+
     return X
 
 def drop_na(X, percent):
@@ -53,14 +57,14 @@ def make_categorical(X, cols):
     return X
 
 
-def get_data():
+def get_data(cleanings= [{'processus': 'drop_na', 'variables' :{'percent' : 95}}, {'processus': 'fill_na', 'variables' :{'numeric': 'mean', 'string': 'Null'}}]):
     X_train, y_train = load_data(path = '../data/train.csv', y_col ='SalePrice', index_col = 'Id')
     X_test = load_data(path = '../data/test.csv', y_col = None, index_col = 'Id')
     train_ids = X_train.index
     test_ids = X_test.index
     X = pd.concat([X_train, X_test])
 
-    X = cleaning(X = X.copy() , processus= [drop_na, fill_na], variables = [{'percent' : 100}, {'numeric': 'mean', 'string': 'Null'}])
+    X = cleaning(X = X.copy() , cleanings = cleanings)
     cat_cols = get_categorical_cols(X)
     X = make_categorical(X, cols = cat_cols)
     X_train = X.loc[train_ids]
