@@ -99,6 +99,7 @@ def pipeline_random_search(max_evals):
     max_evals = max_evals)
 
     best['max_features'] = ['auto', 'log2', 'sqrt'][best['max_features']]
+    best['criterion'] = ['entropy', 'gini'][best['criterion']]
     best['fill_na'] = ['mean', 'flag'][best['fill_na']]
     best['n_estimators'] = int(best['n_estimators'])
 
@@ -112,7 +113,7 @@ def pipeline_random_search(max_evals):
     model_cla = regression(RandomForestClassifier, X_train, y_train, params= best)
     # get submission file
     y_pred = model_cla.predict(X_test)
-    pd.DataFrame({'PassengerId':X_test.index, 'SalePrice':y_pred}).set_index('PassengerId').to_csv('submission.csv')
+    pd.DataFrame({'PassengerId':X_test.index, 'Survived':y_pred}).set_index('PassengerId').to_csv('submission.csv')
 
 if __name__ == '__main__':
     X_train, X_test, y_train = get_data()
