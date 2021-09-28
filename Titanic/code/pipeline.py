@@ -4,13 +4,15 @@ import pickle
 from data_acquisition_processing import *
 from ml_bricks import *
 
+from hyperopt import hp, fmin, tpe, STATUS_OK
+
 
 
 def model_grid_search():
     models_eval = []
 
     model = {'metric': 'mean_squared_log_error', 'n_splits': 5}
-    models = ["RandomForestRegressor"]
+    models = ["RandomForestClassifier"]
     max_depth = [2, 6, 18, 54]
     n_estimators = [10, 100, 1000]
     max_features = ['auto', 'log2', 'sqrt']
@@ -60,7 +62,7 @@ def pipeline_defined_models():
 
     # get submission file
     y_pred = model_reg.predict(X_test)
-    pd.DataFrame({'id':X_test.index, 'SalePrice':y_pred}).set_index('id').to_csv('submission.csv')
+    pd.DataFrame({'PassengerId':X_test.index, 'Survived':y_pred}).set_index('PassengerId').to_csv('submission.csv')
 
 def hyperparameter_tuning(params):
     cleanings = [
@@ -86,8 +88,9 @@ def pipeline_random_search(max_evals):
     space = {
         'drop_na' : hp.quniform("drop_na", 0, 100, 1),
         'fill_na' : hp.choice("fill_na", ['mean', 'flag']),
-        'metric' : 'mean_squared_log_error',
-        'model': 'RandomForestRegressor',
+        'criterion' : hp.choice("criterion", ['entropy', 'gini']),
+        'metric' : 'accuracy_score',
+        'model': 'RandomForestClassifier',
         "n_estimators": hp.quniform("n_estimators", 1, 1000, 1),
         "max_depth": hp.quniform("max_depth", 1, 64,1),
         "max_features" : hp.choice('max_features', ['auto', 'log2', 'sqrt']),
@@ -106,10 +109,10 @@ def pipeline_random_search(max_evals):
     X_train, X_test, y_train = get_data(cleanings)
     X_train, y_train, _, _ = split_2(X_train, y_train, train_size = 1)
 
-    model_reg = regression(RandomForestRegressor, X_train, y_train, params= best)
+    model_cla = regression(RandomForestClassifier, X_train, y_train, params= best)
     # get submission file
-    y_pred = model_reg.predict(X_test)
-    pd.DataFrame({'id':X_test.index, 'SalePrice':y_pred}).set_index('id').to_csv('submission.csv')
+    y_pred = model_cla.predict(X_test)
+    pd.DataFrame({'PassengerId':X_test.index, 'SalePrice':y_pred}).set_index('PassengerId').to_csv('submission.csv')
 
 if __name__ == '__main__':
     X_train, X_test, y_train = get_data()

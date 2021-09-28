@@ -58,8 +58,8 @@ def make_categorical(X, cols):
 
 
 def get_data(cleanings= [{'processus': 'drop_na', 'variables' :{'percent' : 95}}, {'processus': 'fill_na', 'variables' :{'numeric': 'mean', 'string': 'Null'}}]):
-    X_train, y_train = load_data(path = '../data/train.csv', y_col ='SalePrice', index_col = 'Id')
-    X_test = load_data(path = '../data/test.csv', y_col = None, index_col = 'Id')
+    X_train, y_train = load_data(path = '../data/train.csv', y_col ='Survived', index_col = 'PassengerId')
+    X_test = load_data(path = '../data/test.csv', y_col = None, index_col = 'PassengerId')
     train_ids = X_train.index
     test_ids = X_test.index
     X = pd.concat([X_train, X_test])

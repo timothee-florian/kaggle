@@ -1,8 +1,9 @@
 from sklearn.model_selection import train_test_split
 from sklearn.model_selection import cross_val_score
 from sklearn.model_selection import KFold
-from sklearn.ensemble import RandomForestRegressor
+from sklearn.ensemble import RandomForestRegressor, RandomForestClassifier
 from sklearn.metrics import r2_score, mean_squared_error, mean_squared_log_error
+from sklearn.metrics import accuracy_score
 
 import numpy as np
 
@@ -80,7 +81,8 @@ def chose_model(models_eval):
     metric_eval = {
         'r2_score': 'larger',
         'mean_squared_error' : 'smaller',
-        'mean_squared_log_error' : 'smaller'
+        'mean_squared_log_error' : 'smaller',
+        'accuracy_score': 'larger'
     }
     evaluation = {
         'larger': '>',
